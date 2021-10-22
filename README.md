@@ -7,3 +7,20 @@ counting the number of A’s, C’s, G’s, T’s in the sequence and reporting 
 reporting the length of the sequence, and more (we are still brainstorming what would be useful). The analysis would be sent back to the frontend so the user can see the data.
 
 One of the main motivators for this project is to create a user interface that is a bit easier to take in than the default NCBI view. For many beginner Bioinformaticians, the amount of information available on an NCBI page can be overwhelming. The other motivations for the project are mostly for our own educational purposes. We would like to learn how to apply the new Python concepts we have been learning to bioinformatics topics. We are also using Flask for this project to learn more about backend frameworks in Python. 
+
+
+
+## Usage
+
+### Start a Python 3 virtual environment
+
+```bash
+python3 -m venv venv
+source venv/Scripts/activate
+```
+
+### Install dependencies
+
+```bash
+pip install -r requirements.local.txt
+```
