@@ -31,14 +31,14 @@ def base_counter(seq):
             returns the GC content 
 '''
 def gc_content(seq):
-    base_count = base_counter(seq)
-    gc_content = base_count.get('C') / base_count.get('G')
-
-    
+    base_dict = base_counter(seq)
+    base_count = base_dict.get('C') + base_dict.get('G') +base_dict.get('A') + base_dict.get('T')
+    gc_count = base_dict.get('C') + base_dict.get('G')
+    gc_content = gc_count / base_count
     
     return round(gc_content, 2)
 
-#print(gc_content("AAAAGGGTTCCCCCCCCCC"))
+#print(gc_content("ATTTTGC"))
 
 
 def non_nucleotide_counter(seq):
