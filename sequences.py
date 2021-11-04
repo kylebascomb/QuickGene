@@ -24,4 +24,14 @@ def get_seq(id, email = email):
     return None
 
 
-print(get_seq('AH002560.3').seq)
+def format_seq(seq_record):
+    return {
+        'id': seq_record.id,
+        'name': seq_record.name,
+        'description': seq_record.description,
+        'sequence': str(seq_record.seq.upper())
+    
+    }
+
+
+print(format_seq(get_seq('AH002560.3')))
