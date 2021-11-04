@@ -1,5 +1,11 @@
 
 import math
+import seaborn as sns
+import matplotlib.pyplot as plt
+from PIL import Image
+import PIL
+
+
 '''This function returns count of all bases in a sequence as a dictionary
         Ex: ACGGGTAC -> {'A': 2, 'C': 2, 'G': 3, 'T': 1}
         Parameters:
@@ -51,3 +57,27 @@ def non_nucleotide_counter(seq):
             returns dictionary in the form of {position: length}
     '''
     return {}
+
+
+def create_count_chart(base_count):
+    '''
+    This function uses seaborn to create a barchart of the dictionary returned in
+    base_counter.
+    Parameters:
+        base_count (dict): A dictionary with the keys as the base, and the values as the count of each base
+            in a sequence
+    Returns:
+        Returns the Figure object
+    '''
+    plot = sns.barplot(x=list(base_count.keys()), y=list(base_count.values()))
+    return plot.get_figure()
+
+
+def save_chart(img, filename):
+    filepath = './charts/' + filename + '.png'
+    img.savefig(filepath)
+
+
+save_chart(create_count_chart({'A': 2, 'C': 2, 'G': 3, 'T': 1}), 'testfig')
+
+
