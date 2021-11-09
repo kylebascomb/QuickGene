@@ -1,7 +1,10 @@
 
 import math
+from Bio.SeqIO import write
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sequences import format_seq, get_seq, write_fasta_file
+
 from PIL import Image
 import PIL
 
@@ -59,25 +62,43 @@ def non_nucleotide_counter(seq):
     return {}
 
 
-def create_count_chart(base_count):
+def create_count_chart(base_count,filepath):
     '''
     This function uses seaborn to create a barchart of the dictionary returned in
-    base_counter.
+    base_counter. It also saves this chart to the path specified
     Parameters:
         base_count (dict): A dictionary with the keys as the base, and the values as the count of each base
             in a sequence
+        filepath (str): path to the file to save the chart
     Returns:
         Returns the Figure object
     '''
     plot = sns.barplot(x=list(base_count.keys()), y=list(base_count.values()))
+    plot.get_figure().savefig(filepath)
     return plot.get_figure()
 
 
-def save_chart(img, filename):
-    filepath = './charts/' + filename + '.png'
-    img.savefig(filepath)
+def compile_analysis_from_id(id):
+    '''
+    This function compiles all the analysis into a single dictionary to be used by Flask
+    Parameters:
+        id (str): Sequence ID
+    Returns:
+        returns a dictionary of all the sequence information
+    '''
+    seq_info = format_seq(get_seq(id))
+    chart_path = './charts/' + id + '.png'
+    fasta_path = './fasta/' + id + '.fasta'
+    seq_info['base_counts'] = base_counter(seq_info['sequence'])
+    seq_info['gc_content'] = gc_content(seq_info['sequence'])
+    seq_info['chart_path'] = chart_path
+    seq_info['fasta_path'] = fasta_path
+
+    create_count_chart(seq_info['base_counts'], chart_path)
+    write_fasta_file(seq_info, fasta_path)
+    return seq_info
 
 
-save_chart(create_count_chart({'A': 2, 'C': 2, 'G': 3, 'T': 1}), 'testfig')
-
+#save_chart(create_count_chart({'A': 2, 'C': 2, 'G': 3, 'T': 1}), 'testfig')
+#compile_analysis_from_id('AH002560.3')
 

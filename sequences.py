@@ -40,7 +40,7 @@ def format_seq(seq_record):
     
     }
 
-def write_fasta_file(formatted_sequence, filepath='./'):
+def write_fasta_file(formatted_sequence, file_path='./'):
     '''
     This function formats the information in the formatted_sequence dictionary and
     writes it to a file.
@@ -49,8 +49,10 @@ def write_fasta_file(formatted_sequence, filepath='./'):
         filepath (str) : Relative file path to write to. The default filepath is the current directory     
     '''
     header = '>{} | {} | {}'.format(formatted_sequence['id'], formatted_sequence['name'], formatted_sequence['description'])
-    full_file_path = filepath + formatted_sequence['name'] + '.fasta'
-    with open(full_file_path, 'w') as f:
+    if file_path == './':
+        file_path = file_path + formatted_sequence['name'] + '.fasta'
+    
+    with open(file_path, 'w') as f:
         f.write(header)
         f.write('\n')
         f.write(formatted_sequence['sequence'])
@@ -58,4 +60,4 @@ def write_fasta_file(formatted_sequence, filepath='./'):
         
 
 
-print(write_fasta_file(format_seq(get_seq('AH002560.3'))))
+#print(write_fasta_file(format_seq(get_seq('AH002560.3'))))
