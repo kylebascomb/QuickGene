@@ -2,11 +2,10 @@
 import math
 from Bio.SeqIO import write
 import seaborn as sns
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sequences import format_seq, get_seq, write_fasta_file
-
-from PIL import Image
-import PIL
 
 
 '''This function returns count of all bases in a sequence as a dictionary
@@ -53,13 +52,20 @@ def gc_content(seq):
 def non_nucleotide_counter(seq):
     '''This function parses a sequence and returns a dictionary of the location of each 
         non ACGT base and the length of unknown bases if they are consecutive
-        Ex: ACNGGGNNNTAC -> {2: 1, 6, 3}
+        Ex: ACNGGGNNNTAC -> {2: 1, 6: 3}
         Parameters:
             seq (str): nucleotide sequence
         Returns:
             returns dictionary in the form of {position: length}
     '''
     return {}
+
+
+def find_palindromes(seq):
+    '''This function parses the sequence and returns a list of palindromic nucleotide sequences
+        within the seq. Returns a list of all unique palindromes
+
+    '''
 
 
 def create_count_chart(base_count,filepath):
@@ -87,10 +93,11 @@ def compile_analysis_from_id(id):
         returns a dictionary of all the sequence information
     '''
     seq_info = format_seq(get_seq(id))
-    chart_path = './charts/' + id + '.png'
-    fasta_path = './fasta/' + id + '.fasta'
+    chart_path = './static/charts/' + id + '.png'
+    fasta_path = './static/fasta/' + id + '.fasta'
     seq_info['base_counts'] = base_counter(seq_info['sequence'])
     seq_info['gc_content'] = gc_content(seq_info['sequence'])
+    seq_info['chart'] = create_count_chart(seq_info['base_counts'], chart_path)
     seq_info['chart_path'] = chart_path
     seq_info['fasta_path'] = fasta_path
 
@@ -100,5 +107,5 @@ def compile_analysis_from_id(id):
 
 
 #save_chart(create_count_chart({'A': 2, 'C': 2, 'G': 3, 'T': 1}), 'testfig')
-#compile_analysis_from_id('AH002560.3')
+print(compile_analysis_from_id('AH002560.3'))
 
