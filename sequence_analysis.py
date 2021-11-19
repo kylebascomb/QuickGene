@@ -1,5 +1,6 @@
 
 import math
+import re
 from Bio.SeqIO import write
 import seaborn as sns
 import matplotlib
@@ -48,9 +49,7 @@ def gc_content(seq):
 
 #print(gc_content("ATTTTGC"))
 
-
-def non_nucleotide_counter(seq):
-    '''This function parses a sequence and returns a dictionary of the location of each 
+'''This function parses a sequence and returns a dictionary of the location of each 
         non ACGT base and the length of unknown bases if they are consecutive
         Ex: ACNGGGNNNTAC -> {2: 1, 6: 3}
         Parameters:
@@ -58,16 +57,48 @@ def non_nucleotide_counter(seq):
         Returns:
             returns dictionary in the form of {position: length}
     '''
-    return {}
+def non_nucleotide_counter(seq):
+    non_nucleotides = {}
 
+    match = re.finditer(r'[^ATCG]', seq)
+    for i in match:
+        non_dna = i.group()
+        non_nucleotides[non_dna] = i.start()
+    return non_nucleotides
+
+# print(non_nucleotide_counter("ASEETBC"))
 
 def find_palindromes(seq):
     '''This function parses the sequence and returns a list of palindromic nucleotide sequences
         within the seq. Returns a list of all unique palindromes
 
     '''
+    palindromes = set()
+ 
+    for i in range(len(seq)):
+ 
+        # odd length strings
+        expand(seq, i, i, palindromes)
+        # even length strings
+        expand(seq, i, i + 1, palindromes)
+ 
+    # print all unique palindromic substrings
+    return list(palindromes)
 
-
+# recursive function called in find_palindromes()
+def expand(seq, low, high, palindromes):
+ 
+    # run till `s[low.high]` is not a palindrome
+    while low >= 0 and high < len(seq) and seq[low] == seq[high]:
+        
+        # seq must be length of 3 or longer
+        if ((high + 1) - low > 2):
+            palindromes.add(seq[low: high + 1])
+ 
+        # update pointers
+        low = low - 1
+        high = high + 1
+# print(find_palindromes("GATCCTAACGTGA"))
 def create_count_chart(base_count,filepath):
     '''
     This function uses seaborn to create a barchart of the dictionary returned in
