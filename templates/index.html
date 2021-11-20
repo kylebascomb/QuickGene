@@ -13,5 +13,22 @@
         </div>
     </form>
     <img src="{{seq_info['chart_path']}}"></img>
+    <br>
+    <br>
+    <h1>Nucleotide Sequence Information</h1>
+    <br>
+    <ul>
+        <li>Nucleotide sequence name is  {{ seq_info['name'] }}. </li>
+        {% autoescape false %}
+            <li>Nucleotide sequence name is  {{ seq_info['test']}}. </li>
+            
+            <li>Nucleotide sequence description is {{ seq_info['description'] }}. </li>
+            <li>Nucleotide sequence gc content is {{ seq_info['gc_content'] }}. </li>
+            <li>Nucleotide sequence sequence is : </li>
+            {% for line in seq_info['seq_html']%}
+                <p>{{line}}</p>
+            {% endfor %}
+        {% endautoescape %}
+    </ul>
     
 {% endblock %}
