@@ -14,6 +14,7 @@ templates/index.html.
 Display the following information:
 seq_info['name']
 seq_info['description']
+Bar Chart (Done)
 seq_info['gc_content']
 seq_info['sequence']
 
