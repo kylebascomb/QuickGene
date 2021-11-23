@@ -27,10 +27,15 @@ def get_seq(id, email = email):
 def format_seq(seq_record):
     '''
     This function formats the information in a Seq record into a dictionary.
+    TODO @Adam, check if the get_seq call returns an error, if so, return a dictionary with a 
+        single key : 'errors' 
     Parameters:
         seq_record (Bio.Seq): the seq record to be formatted
     Returns:
         returns a dictionary with the following keys: id, name, description, and sequence
+
+        if the sequence id cannot be retrieved using BioPython, returns a dictionary with a 
+        single key : 'errors'
     '''
     return {
         'id': seq_record.id,
