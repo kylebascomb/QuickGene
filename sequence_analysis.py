@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sequences import format_seq, get_seq, write_fasta_file
+from config import line_length
 
 NON_NUCLEOTIDE_COLOR = 'red'
 PALINDROME_EVEN = 'blue'
@@ -311,6 +312,17 @@ def compile_analysis_from_id(id):
         id (str): Sequence ID
     Returns:
         returns a dictionary of all the sequence information
+        The dictionary should have the following keys:
+        seq_info['id']: Record ID
+        seq_info['name']: Record Name
+        seq_info['description']: seq_record.description,
+        seq_info['sequence']: str(seq_record.seq.upper())
+        seq_info['base_counts'] = base_counter(seq_info['sequence'])
+        seq_info['gc_content'] = gc_content(seq_info['sequence'])
+        seq_info['chart'] = create_count_chart(seq_info['base_counts'], chart_path)
+        seq_info['chart_path'] = chart_path
+        seq_info['fasta_path'] = fasta_path
+        seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, line_length)
     '''
     seq_info = format_seq(get_seq(id))
     chart_path = './static/charts/' + id + '.png'
@@ -323,7 +335,7 @@ def compile_analysis_from_id(id):
     seq_info['fasta_path'] = fasta_path
     #html
     colors = compile_html_colors(non_nucleotide_counter(seq_info['sequence']), find_palindromes(seq_info['sequence']))
-    seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, 100)
+    seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, line_length)
     #create files
     create_count_chart(seq_info['base_counts'], chart_path)
     write_fasta_file(seq_info, fasta_path)

@@ -1,7 +1,7 @@
 from Bio import Entrez, SeqIO
-import sys
+from config import email
 
-email = 'kylebascomb@gmail.com'     # should be moved to an environment variable or argument
+
 
 def get_seq(id, email = email):
     '''This function calls the Entrez efetch function to get the FASTA 
