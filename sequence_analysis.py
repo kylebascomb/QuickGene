@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from sequences import format_seq, get_seq, write_fasta_file
+from config import line_length
 
 NON_NUCLEOTIDE_COLOR = 'red'
 PALINDROME_EVEN = 'blue'
@@ -311,6 +312,18 @@ def compile_analysis_from_id(id):
         id (str): Sequence ID
     Returns:
         returns a dictionary of all the sequence information
+        The dictionary should have the following keys:
+        seq_info['id']: Record ID from NCBI
+        seq_info['name']: Record Name from NCBI
+        seq_info['description']: Record Description from NCBI
+        seq_info['sequence']: Record sequence from NCBI
+        seq_info['base_counts'] = Count of all bases A,C,G,T
+        seq_info['gc_content'] = GC Content of the sequence
+        seq_info['chart'] = img file of the bar chart for base counts
+        seq_info['chart_path'] = the path to the chart in the local directory
+        seq_info['fasta_path'] = the path to the fasta file in the local directory
+        seq_info['seq_html'] = sequence wrapped in HTML to display on the webpage
+        seq_info['errors'] = Optional key that holds any errors such as the id being invalid
     '''
     seq_info = format_seq(get_seq(id))
     chart_path = './static/charts/' + id + '.png'
@@ -323,7 +336,7 @@ def compile_analysis_from_id(id):
     seq_info['fasta_path'] = fasta_path
     #html
     colors = compile_html_colors(non_nucleotide_counter(seq_info['sequence']), find_palindromes(seq_info['sequence']))
-    seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, 100)
+    seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, line_length)
     #create files
     create_count_chart(seq_info['base_counts'], chart_path)
     write_fasta_file(seq_info, fasta_path)

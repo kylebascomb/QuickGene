@@ -13,7 +13,8 @@ I need that button to allow the user to download the file with the path stored i
 TODO @Adam
 Create some simple error handling to notify the user if the id is length 0 or if 
 the sequence id is invalid. To achieve this you may have to bring the error from get_seq
-sequences.py up into the index route to be able to check it. 
+sequences.py up into the index route to be able to check it. You can find more information 
+on this issue in sequences.py in the format_seq defintion
 
 I think flash can be used for this, but any other method will work fine.
 '''
