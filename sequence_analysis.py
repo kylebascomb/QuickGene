@@ -1,8 +1,5 @@
 
-import math
-from os import startfile
 import re
-from Bio.SeqIO import write
 import seaborn as sns
 import matplotlib
 matplotlib.use('Agg')
@@ -34,7 +31,7 @@ def base_counter(seq):
             base_count['T'] += 1
     
     return base_count
-#print(base_counter("AAGGTTCCAGGT"))
+
 
 def gc_content(seq):
     '''This function returns the GC content of a sequence.
@@ -51,7 +48,6 @@ def gc_content(seq):
     
     return round(gc_content, 2)
 
-#print(gc_content("ATTTTGC"))
 
 def non_nucleotide_counter(seq):
     '''This function parses a sequence and returns a dictionary of the location of each 
@@ -71,6 +67,21 @@ def non_nucleotide_counter(seq):
 
 
 def compile_html_colors(non_nucleotide, palindrome):
+    '''
+    This function creates a color code based on the location of non_nucleotides
+    and palindromes
+    Parameters:
+        non_nucleotide (list): List of lists of the location of each non nucleotide in the sequence
+        palindrome (list): List of lists of the location of each palindrome in the sequence
+    Returns:
+        Returns a list of dictionaries. Each dictionary represents the location and color of a subsequence
+        example:{
+            'color': 'red',
+            'start': 100,
+            'end': 105
+        }
+
+    '''
     colors = []
     for entry in non_nucleotide:
         colors.append({
@@ -91,11 +102,15 @@ def compile_html_colors(non_nucleotide, palindrome):
         index +=1
     return colors
 
-#print(non_nucleotide_counter("ASEETBC"))
 
 def find_palindromes(seq):
     '''This function parses the sequence and returns a list of palindromic nucleotide sequences
-        within the seq. Returns a list of all unique palindromes
+        within the seq. 
+        Parameters:
+            seq (str): sequence 
+        Returns:
+            Returns a list of all the palindromes. Each entry in the list is another with the start position at index 0
+            and the end position at index 1
 
     '''
     palindromes = []
@@ -108,10 +123,13 @@ def find_palindromes(seq):
         expand(seq, i, i + 1, palindromes)
  
     # print all unique palindromic substrings
-    return palindromes
+    return remove_nested_palindromes(palindromes)
 
 # recursive function called in find_palindromes()
 def expand(seq, low, high, palindromes):
+    '''
+    Helper function for finding palindromes
+    '''
  
     # run till `s[low.high]` is not a palindrome
     while low >= 0 and high < len(seq) and compare_complimentary(seq[low], seq[high]):
@@ -122,6 +140,22 @@ def expand(seq, low, high, palindromes):
     # seq must be length of 3 or longer
     if (high - low  > 3):
         palindromes.append([low +1, high -1])
+
+def remove_nested_palindromes(palindromes):
+    '''
+    Helper function to remove palindromes that overlap.
+    '''
+    current_max = palindromes[0][1]
+    remove_list = []
+    for i in range(len(palindromes)):
+        if palindromes[i][0] <= current_max:
+            remove_list.append(palindromes[i])
+        else:
+            current_max = palindromes[i][1]
+    for item in remove_list:
+        palindromes.remove(item)
+    return palindromes
+
 
 
 def compare_complimentary(a, b):
@@ -144,7 +178,6 @@ def compare_complimentary(a, b):
     else:
         return False
 
-print(find_palindromes("AAAAATTTTTCGCGACGCGT"))
 
 def create_count_chart(base_count,filepath):
     '''
@@ -163,21 +196,45 @@ def create_count_chart(base_count,filepath):
 
 
 def format_seq_as_lines(sequence, characters_per_line):
+    '''
+    This is a helper function that breaks the entire sequence into a list of lines 
+    based on the characters_per_line. 
+    Parameters:
+        sequence (str): Long sequence of characters
+        characters_per_line (int): number of characters that each line should contain.
+    Returns:
+        Returns a list of strings, each with the length specified in characters_per_line. 
+    '''
     lines = []
     for i in range(0, len(sequence), characters_per_line):
         lines.append([i, sequence[i:i+characters_per_line]])
     return lines
 
-#print(format_seq_as_lines('abcdefghijklmnopqrstuvwzyz', 4))
 
 
-def format_seq_with_html(lines, color_code):
+def format_seq_with_html(sequence, color_code, characters_per_line):
+    '''
+    This function formats the the sequence with HTML spans according the the color code
+    Parameters:
+        sequence (str): The sequence of base pairs
+        color_code (list): list of dictionaries that represents the colors and location that need to be formatted
+        with HTML spans
+        characters_per_line (int): number of characters per line 
+    Returns:
+        Returns a list of all the lines formatted with HTML. Each entry in the list represents one line.
+    '''
+    lines = format_seq_as_lines(sequence, characters_per_line )
     html_lines=[]
 
     def wrap_in_p_tags(start, line):
         start_html = '<p>' + str(start) +'   '
         end_html = '</p>'
         return start_html + line + end_html
+    
+    def wrap_in_grid(start, line):
+        start_html = '<div class="row"><div class="col">'+str(start)+'</div>'
+        end_html='<div class="col-md-auto"> <p class="text-monospace text-left">'+str(line)+'</p></div></div>'
+        return start_html+end_html
     
     def wrap_in_span(color, subseq):
         start_html = '<span style="color: ' + color +'">'
@@ -195,17 +252,9 @@ def format_seq_with_html(lines, color_code):
                 else:
                     line+= seq
         return line
-
     
-    for line in lines:
-        start = line[0]
-        if start == 640:
-            print(line)
-        subseq = line[1]
-        end = start + len(line[1]) -1
-        line_splits = []
+    def find_color_codes(color_code, start, end):
         codes_in_line = []
-        #get all codes for the line
         for code in color_code:
             if code['start'] >= start and code['start'] <= end:
                 codes_in_line.append(code)      
@@ -213,7 +262,16 @@ def format_seq_with_html(lines, color_code):
                 codes_in_line.append(code)
             elif code['start'] < start and code['end'] > end:
                 codes_in_line.append(code)
+        return codes_in_line
 
+    
+    for line in lines:
+        start = line[0]
+        subseq = line[1]
+        end = start + len(line[1])
+        line_splits = []
+        codes_in_line = find_color_codes(color_code, start, end)
+        
         cur = 0 #cursor
 
         if len(codes_in_line) == 0:
@@ -222,15 +280,14 @@ def format_seq_with_html(lines, color_code):
             codes_in_line = sorted(codes_in_line, key=lambda k: k['start'])
             for i in range(len(codes_in_line)): 
                 code = codes_in_line[i]
- 
                 #if there is no color to start
                 if code['start'] > start:
-                   line_splits.append([subseq[cur:code['start'] - start ], '']) 
+                    line_splits.append([subseq[cur:code['start'] - start ], '']) 
                    #if no overflow
-                   if code['end'] <= end:
-                       line_splits.append([subseq[code['start'] - start :code['end']- start + 1], code['color']])
-                   else:
-                       line_splits.append([subseq[code['start']- start :], code['color']])
+                    if code['end'] <= end:  
+                        line_splits.append([subseq[code['start'] - start :code['end']- start + 1], code['color']])
+                    else:
+                       line_splits.append([subseq[code['start']- start:], code['color']])
                 else:
                     #color from start
                     #if no overflow
@@ -241,14 +298,9 @@ def format_seq_with_html(lines, color_code):
                 if i == (len(codes_in_line) - 1) and code['end'] <= end:
                     line_splits.append([subseq[code['end']-start + 1:], ''])
                 cur = code['end']-start + 1
-        html_lines.append(wrap_in_p_tags(start, format_line(line_splits )))
-        if start == 640:
-            print(line_splits)
-            print(codes_in_line)
+        html_lines.append(wrap_in_grid(start, format_line(line_splits )))
+
     return html_lines
-
-test_seq = 'CCAACCACGTCCGGGGGCTCTGCAACACAAGGAGTCTGCATGTCTAGCAAGTAGACATGCTCAGCTTTGTGGATACGCGGATTTTGTTGCTGCTCGCAGTAACTTCATACCTAGCAACAAGCCAACGTAAGTGCTTTCGCTTGTTCGTGGCATGGGTGGCGGCAGGGGGTGGCTGTCCTCGCTCCTGCGCGCTCAGGAAANNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNATGTGAGTGAGNNNNNNNNN'
-
 
 
 
@@ -271,10 +323,8 @@ def compile_analysis_from_id(id):
     seq_info['fasta_path'] = fasta_path
     #html
     colors = compile_html_colors(non_nucleotide_counter(seq_info['sequence']), find_palindromes(seq_info['sequence']))
-    lines = format_seq_as_lines(seq_info['sequence'], 80)
-    seq_info['seq_html'] = format_seq_with_html(lines, colors)
-
-
+    seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, 100)
+    #create files
     create_count_chart(seq_info['base_counts'], chart_path)
     write_fasta_file(seq_info, fasta_path)
     return seq_info
