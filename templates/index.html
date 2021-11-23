@@ -15,6 +15,7 @@
     
     <br>
     <br>
+    {%if seq_info %}
     <h1>Nucleotide Sequence Information</h1>
     <br>
     <div class="list-group">
@@ -23,7 +24,7 @@
             <h5 class="mb-1">{{ seq_info['name'] }}</h5>
           </div>
           <p class="mb-1">{{ seq_info['description'] }}</p>
-          <small>Download Fasta File</small>
+          <button class="btn btn-secondary">Download Fasta File</button>
         </div>
         
       </div>
@@ -44,12 +45,13 @@
           </div>
           {% autoescape false %}
                 {% for line in seq_info['seq_html']%}
-                    <p>{{line}}</p>
+                    {{line}}
                 {% endfor %}
             {% endautoescape %}
         </div>
         
       </div>
+      {% endif %}
 
         
     
