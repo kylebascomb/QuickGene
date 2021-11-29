@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, send_file, flash
 from sequence_analysis import compile_analysis_from_id
 import re
+import os
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'HJskjAn92nSA2SDA239SDAN1312DSA8'
@@ -30,4 +31,4 @@ def download_fasta(filename):
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=os.environ.get('PORT', 5000))
