@@ -334,6 +334,7 @@ def compile_analysis_from_id(id):
         seq_info['id']: Record ID from NCBI
         seq_info['name']: Record Name from NCBI
         seq_info['description']: Record Description from NCBI
+        seq_info['length']: length of the sequence
         seq_info['sequence']: Record sequence from NCBI
         seq_info['base_counts'] = Count of all bases A,C,G,T
         seq_info['gc_content'] = GC Content of the sequence
@@ -346,6 +347,7 @@ def compile_analysis_from_id(id):
     chart_path = './static/charts/' + id + '.png'
     fasta_path = './static/fasta/' + id + '.fasta'
     
+    seq_info['length'] = len(seq_info['sequence'])
     seq_info['base_counts'] = base_counter(seq_info['sequence'])
     seq_info['gc_content'] = gc_content(seq_info['sequence'])
     seq_info['chart'] = create_count_chart(seq_info['base_counts'], chart_path)
