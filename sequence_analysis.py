@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
-from sequences import format_seq, get_seq, write_fasta_file
+from sequences import format_seq, get_seq
 from config import line_length
 
 NON_NUCLEOTIDE_COLOR = 'red'
@@ -304,6 +304,24 @@ def format_seq_with_html(sequence, color_code, characters_per_line):
     return html_lines
 
 
+def write_fasta_file(formatted_sequence, file_path='./'):
+    '''
+    This function formats the information in the formatted_sequence dictionary and
+    writes it to a file.
+    Parameters:
+        formatted_sequence (dict) : Dictionary of the sequence information
+        filepath (str) : Relative file path to write to. The default filepath is the current directory     
+    '''
+    header = '>{} | {} | {}'.format(formatted_sequence['id'], formatted_sequence['name'], formatted_sequence['description'])
+    if file_path == './':
+        file_path = file_path + formatted_sequence['name'] + '.fasta'
+    
+    with open(file_path, 'w') as f:
+        f.write(header)
+        f.write('\n')
+        f.write(formatted_sequence['sequence'])
+
+
 
 def compile_analysis_from_id(id):
     '''
@@ -323,7 +341,6 @@ def compile_analysis_from_id(id):
         seq_info['chart_path'] = the path to the chart in the local directory
         seq_info['fasta_path'] = the path to the fasta file in the local directory
         seq_info['seq_html'] = sequence wrapped in HTML to display on the webpage
-        seq_info['errors'] = Optional key that holds any errors such as the id being invalid
     '''
     seq_info = format_seq(get_seq(id))
     chart_path = './static/charts/' + id + '.png'
@@ -343,6 +360,4 @@ def compile_analysis_from_id(id):
     return seq_info
 
 
-#save_chart(create_count_chart({'A': 2, 'C': 2, 'G': 3, 'T': 1}), 'testfig')
-#print(compile_analysis_from_id('AH002560.3'))
 
