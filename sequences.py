@@ -1,8 +1,6 @@
 from Bio import Entrez, SeqIO
 from config import email
 
-
-
 def get_seq(id, email = email):
     '''This function calls the Entrez efetch function to get the FASTA 
         sequence related to the id.
