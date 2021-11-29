@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, flash, redirect
+from flask import Flask, render_template, request, send_file, flash
 from sequence_analysis import compile_analysis_from_id
 import re
 
