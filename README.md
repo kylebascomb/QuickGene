@@ -1,5 +1,4 @@
-# QuickGene
-![image](image.png)
+# ![image](image.png)
 
 Flask Project for basic bioinformatics analysis using data from NCBI
 QuickGene is a Flask based web page that will be used to get a quick overview of a Nucleotide sequence using an Accession ID from NCBI. 
