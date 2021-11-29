@@ -1,4 +1,6 @@
 # QuickGene
+Screen Shot 2021-11-28 at 12.32.53 AM
+
 Flask Project for basic bioinformatics analysis using data from NCBI
 QuickGene is a Flask based web page that will be used to get a quick overview of a Nucleotide sequence using an Accession ID from NCBI. 
 The user will fill in a form on the webpage with the Accession ID. Then, the sequence will be retrieved in the backend using the BioPython Entrez API. 
