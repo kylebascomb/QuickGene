@@ -12,14 +12,12 @@ def index():
     seq_info={}
     if request.method =='POST':
         id = request.form['id']
-        matched = re.match("[A-Z]{2}[0-9]{6}.[0-9]", id)
-        is_match = bool(matched)
         if(len(id) == 0):
-            flash('Invalid Sequence ID')
-        elif(not is_match):
             flash('Invalid Sequence ID')
         else:
             seq_info = compile_analysis_from_id(id)
+            if seq_info['errors'] is not None:
+                flash('Invalid Sequence ID')   
         
         
     return render_template('index.html', seq_info=seq_info)

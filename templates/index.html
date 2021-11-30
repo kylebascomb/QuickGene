@@ -20,7 +20,7 @@
     
     <br>
     <br>
-    {%if seq_info %}
+    {%if seq_info and seq_info['errors'] is none%}
     <h1>Nucleotide Sequence Information</h1>
     <br>
     <div class="list-group">

@@ -24,3 +24,11 @@ source venv/Scripts/activate
 ```bash
 pip install -r requirements.local.txt
 ```
+
+### Running the application
+
+```
+python app.py
+```
+
+Navigate to localhost:5000/ on your web browser to view the webpage

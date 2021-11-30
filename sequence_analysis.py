@@ -342,23 +342,25 @@ def compile_analysis_from_id(id):
         seq_info['chart_path'] = the path to the chart in the local directory
         seq_info['fasta_path'] = the path to the fasta file in the local directory
         seq_info['seq_html'] = sequence wrapped in HTML to display on the webpage
+        seq_info['errors'] = errors in ID
     '''
     seq_info = format_seq(get_seq(id))
-    chart_path = './static/charts/' + id + '.png'
-    fasta_path = './static/fasta/' + id + '.fasta'
-    
-    seq_info['length'] = len(seq_info['sequence'])
-    seq_info['base_counts'] = base_counter(seq_info['sequence'])
-    seq_info['gc_content'] = gc_content(seq_info['sequence'])
-    seq_info['chart'] = create_count_chart(seq_info['base_counts'], chart_path)
-    seq_info['chart_path'] = chart_path
-    seq_info['fasta_path'] = fasta_path
-    #html
-    colors = compile_html_colors(non_nucleotide_counter(seq_info['sequence']), find_palindromes(seq_info['sequence']))
-    seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, line_length)
-    #create files
-    create_count_chart(seq_info['base_counts'], chart_path)
-    write_fasta_file(seq_info, fasta_path)
+    if seq_info['errors'] is None:
+        chart_path = './static/charts/' + id + '.png'
+        fasta_path = './static/fasta/' + id + '.fasta'
+        
+        seq_info['length'] = len(seq_info['sequence'])
+        seq_info['base_counts'] = base_counter(seq_info['sequence'])
+        seq_info['gc_content'] = gc_content(seq_info['sequence'])
+        seq_info['chart'] = create_count_chart(seq_info['base_counts'], chart_path)
+        seq_info['chart_path'] = chart_path
+        seq_info['fasta_path'] = fasta_path
+        #html
+        colors = compile_html_colors(non_nucleotide_counter(seq_info['sequence']), find_palindromes(seq_info['sequence']))
+        seq_info['seq_html'] = format_seq_with_html(seq_info['sequence'], colors, line_length)
+        #create files
+        create_count_chart(seq_info['base_counts'], chart_path)
+        write_fasta_file(seq_info, fasta_path)
     return seq_info
 
 

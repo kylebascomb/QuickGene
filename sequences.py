@@ -30,11 +30,16 @@ def format_seq(seq_record):
     Returns:
         returns a dictionary with the following keys: id, name, description, and sequence
     '''
+    if seq_record is None:
+        return {
+            'errors': "Not Found"
+        }
     return {
         'id': seq_record.id,
         'name': seq_record.name,
         'description': seq_record.description,
-        'sequence': str(seq_record.seq.upper())
+        'sequence': str(seq_record.seq.upper()),
+        'errors': None
     }
 
 
